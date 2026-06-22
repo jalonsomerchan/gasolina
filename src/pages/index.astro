@@ -1,26 +1,16 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import Button from '../components/Button.astro';
 import Container from '../components/Container.astro';
-import { defaultLocale, siteConfig } from '../config/site';
-import { useTranslations } from '../i18n/ui';
-
-const locale = defaultLocale;
-const t = useTranslations(locale);
+import { defaultLocale } from '../config/site';
 ---
 
-<BaseLayout title={siteConfig.name} description={t('site.description')} locale={locale}>
+<BaseLayout title="Gasolina al día" locale={defaultLocale}>
   <Container class="py-20">
     <section class="mx-auto max-w-3xl text-center">
-      <p class="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-[var(--color-primary)]">{t('home.eyebrow')}</p>
-      <h1 class="text-4xl font-black tracking-tight sm:text-6xl">{t('home.title')}</h1>
-      <p class="mx-auto mt-6 max-w-2xl text-lg text-[var(--color-muted)]">
-        {t('home.description')}
-      </p>
-      <div class="mt-8 flex flex-wrap justify-center gap-3">
-        <Button href="https://docs.astro.build/">{t('home.docs')}</Button>
-        <Button href={siteConfig.repositoryUrl} variant="secondary">{t('home.repository')}</Button>
-      </div>
+      <p class="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-[var(--color-primary)]">PWA</p>
+      <h1 class="text-4xl font-black tracking-tight sm:text-6xl">Gasolina al día</h1>
+      <p class="mx-auto mt-6 max-w-2xl text-lg text-[var(--color-muted)]">Busca precios de combustible, gasolineras cercanas, mapas, favoritos y estadísticas.</p>
+      <div id="app" class="mt-8"></div>
     </section>
   </Container>
 </BaseLayout>
