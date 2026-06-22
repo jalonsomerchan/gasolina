@@ -1,0 +1,12 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Container from '../../components/Container.astro';
+import GasolinaApp from '../../components/GasolinaApp.astro';
+import { defaultLocale } from '../../config/site';
+---
+
+<BaseLayout title="Ranking de precios" description="Gasolineras más baratas y más caras por combustible y zona." locale={defaultLocale}>
+  <Container class="py-20">
+    <GasolinaApp mode="ranking" title="Ranking de precios" description="Gasolineras más baratas y más caras por combustible y zona." locale={defaultLocale} />
+  </Container>
+</BaseLayout>
