@@ -1,16 +1,17 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Container from '../components/Container.astro';
-import { defaultLocale } from '../config/site';
+import { defaultLocale, siteConfig } from '../config/site';
 ---
 
-<BaseLayout title="Gasolina al día" locale={defaultLocale}>
+<BaseLayout title={siteConfig.name} description={siteConfig.description} locale={defaultLocale}>
   <Container class="py-20">
     <section class="mx-auto max-w-3xl text-center">
       <p class="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-[var(--color-primary)]">PWA</p>
       <h1 class="text-4xl font-black tracking-tight sm:text-6xl">Gasolina al día</h1>
       <p class="mx-auto mt-6 max-w-2xl text-lg text-[var(--color-muted)]">Busca precios de combustible, gasolineras cercanas, mapas, favoritos y estadísticas.</p>
       <div id="app" class="mt-8"></div>
+      <a href={siteConfig.repositoryUrl}>Repositorio</a>
     </section>
   </Container>
 </BaseLayout>
