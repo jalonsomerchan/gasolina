@@ -9,25 +9,46 @@ export const fuelTypes = [
 export const gasolinaPages = [
   { path: '/', key: 'home', mode: 'home' },
   { path: '/gasolineras/', key: 'stations', mode: 'stations' },
+  { path: '/provincias/', key: 'provinces', mode: 'provinces' },
+  { path: '/municipios/', key: 'municipalities', mode: 'municipalities' },
+  { path: '/gasolinera/', key: 'station', mode: 'station' },
   { path: '/cercanas/', key: 'nearby', mode: 'nearby' },
+  { path: '/ranking/', key: 'ranking', mode: 'ranking' },
+  { path: '/rotulos/', key: 'brands', mode: 'brands' },
+  { path: '/comparador/', key: 'compare', mode: 'compare' },
   { path: '/favoritos/', key: 'favorites', mode: 'favorites' },
   { path: '/estadisticas/', key: 'stats', mode: 'stats' },
+  { path: '/utilidades/', key: 'tools', mode: 'tools' },
 ] as const;
 
-const copy = {
+export type GasolinaMode = (typeof gasolinaPages)[number]['mode'];
+
+type PageKey = (typeof gasolinaPages)[number]['key'];
+
+type Copy = {
+  title: string;
+  description: string;
+  pages: Record<PageKey, string>;
+  hero: { eyebrow: string; title: string; text: string; primary: string; secondary: string };
+  app: Record<string, string>;
+};
+
+const copy: Record<Locale, Copy> = {
   es: {
     title: 'Gasolina al día',
-    description: 'Consulta precios de combustible en España.',
-    nav: { search: 'Buscar' },
-    pages: { home: 'Inicio', stations: 'Gasolineras', nearby: 'Cercanas', favorites: 'Favoritos', stats: 'Estadísticas' },
+    description: 'Consulta precios de combustible en España con mapas, histórico, favoritos y comparativas.',
+    pages: { home: 'Inicio', stations: 'Gasolineras', provinces: 'Provincias', municipalities: 'Municipios', station: 'Gasolinera', nearby: 'Cercanas', ranking: 'Ranking', brands: 'Rótulos', compare: 'Comparador', favorites: 'Favoritos', stats: 'Estadísticas', tools: 'Utilidades' },
     hero: { eyebrow: 'PWA', title: 'Encuentra el mejor precio antes de repostar', text: 'Busca, compara y guarda favoritos.', primary: 'Buscar cercanas', secondary: 'Ver estadísticas' },
-    app: { apiMissing: 'Configura la clave pública de la API.', searchPlaceholder: 'Buscar…', searchLabel: 'Buscar', fuel: 'Combustible', province: 'Provincia', municipality: 'Municipio', radius: 'Radio', locate: 'Usar mi ubicación', save: 'Guardar favorito', currentPrices: 'Precios actuales', favoriteStations: 'Tus gasolineras', favoriteMunicipalities: 'Tus municipios', noFavorites: 'Sin favoritos.', results: 'Resultados', map: 'Mapa', chart: 'Histórico', table: 'Tabla', ranking: 'Ranking', stats: 'Estadísticas', utilities: 'Utilidades', cheapest: 'Más baratas', expensive: 'Más caras', savings: 'Ahorro', updated: 'Actualización', loading: 'Cargando…', empty: 'Sin datos.', error: 'Error al cargar.', openMap: 'Abrir mapa', today: 'Hoy', month: 'Últimos 30 días', liters: 'Litros', priceDifference: 'Diferencia', estimatedSaving: 'Ahorro aproximado', installHint: 'Instalable como app.', useLocation: 'Cercanas', details: 'Detalle' },
+    app: { searchPlaceholder: 'Municipio, provincia, rótulo o dirección', searchLabel: 'Buscar', fuel: 'Combustible', province: 'Provincia', municipality: 'Municipio', radius: 'Radio km', results: 'Resultados', map: 'Mapa', chart: 'Histórico', utilities: 'Utilidades', cheapest: 'Más barata', expensive: 'Más cara', loading: 'Cargando…', empty: 'Sin datos.', liters: 'Litros', priceDifference: 'Diferencia €/l' },
   },
   en: {
-    title: 'Fuel Prices Daily', description: 'Check fuel prices in Spain.', nav: { search: 'Search' }, pages: { home: 'Home', stations: 'Stations', nearby: 'Nearby', favorites: 'Favorites', stats: 'Stats' }, hero: { eyebrow: 'PWA', title: 'Find the best price before filling up', text: 'Search, compare and save favorites.', primary: 'Find nearby', secondary: 'View stats' },
-    app: { apiMissing: 'Configure the public API key.', searchPlaceholder: 'Search…', searchLabel: 'Search', fuel: 'Fuel', province: 'Province', municipality: 'Municipality', radius: 'Radius', locate: 'Use my location', save: 'Save favorite', currentPrices: 'Current prices', favoriteStations: 'Your stations', favoriteMunicipalities: 'Your municipalities', noFavorites: 'No favorites.', results: 'Results', map: 'Map', chart: 'History', table: 'Table', ranking: 'Ranking', stats: 'Stats', utilities: 'Tools', cheapest: 'Cheapest', expensive: 'Most expensive', savings: 'Saving', updated: 'Updated', loading: 'Loading…', empty: 'No data.', error: 'Loading error.', openMap: 'Open map', today: 'Today', month: 'Last 30 days', liters: 'Liters', priceDifference: 'Difference', estimatedSaving: 'Approximate saving', installHint: 'Installable as an app.', useLocation: 'Nearby', details: 'Details' },
+    title: 'Fuel Prices Daily',
+    description: 'Check fuel prices in Spain with maps, history, favorites and comparisons.',
+    pages: { home: 'Home', stations: 'Stations', provinces: 'Provinces', municipalities: 'Municipalities', station: 'Station', nearby: 'Nearby', ranking: 'Ranking', brands: 'Brands', compare: 'Compare', favorites: 'Favorites', stats: 'Stats', tools: 'Tools' },
+    hero: { eyebrow: 'PWA', title: 'Find the best price before filling up', text: 'Search, compare and save favorites.', primary: 'Find nearby', secondary: 'View stats' },
+    app: { searchPlaceholder: 'Municipality, province, brand or address', searchLabel: 'Search', fuel: 'Fuel', province: 'Province', municipality: 'Municipality', radius: 'Radius km', results: 'Results', map: 'Map', chart: 'History', utilities: 'Tools', cheapest: 'Cheapest', expensive: 'Most expensive', loading: 'Loading…', empty: 'No data.', liters: 'Liters', priceDifference: 'Difference €/l' },
   },
-} as const;
+};
 
 export function getGasolinaCopy(locale: Locale) { return copy[locale]; }
 export type GasolinaCopy = ReturnType<typeof getGasolinaCopy>;
