@@ -1,25 +1,12 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Container from '../components/Container.astro';
-import AppScript from '../components/AppScript.astro';
+import GasolinaApp from '../components/GasolinaApp.astro';
 import { defaultLocale, siteConfig } from '../config/site';
-import { withBasePath } from '../utils/paths';
 ---
 
 <BaseLayout title={siteConfig.name} description={siteConfig.description} locale={defaultLocale}>
   <Container class="py-20">
-    <section class="gasolina-app" data-gasolina-app data-api-base="https://alon.one/api/gasolina2" data-sw={withBasePath('sw.js')}>
-      <div class="hero-panel">
-        <p class="eyebrow">PWA</p>
-        <h1>Gasolina al día</h1>
-        <p>Busca precios de combustible, gasolineras cercanas, mapas, favoritos y estadísticas.</p>
-        <div class="hero-actions"><button class="button primary" type="button" data-nearby>Cercanas</button><a class="button secondary" href={siteConfig.repositoryUrl}>Repositorio</a></div>
-      </div>
-      <form class="search-panel"><label for="q">Buscar</label><div class="search-row"><input id="q" name="q" type="search" placeholder="Municipio, provincia o gasolinera" /><button class="button primary" type="submit">Buscar</button></div><div class="filters"><label>Provincia<input name="provincia" /></label><label>Municipio<input name="municipio" /></label></div></form>
-      <section class="dashboard-grid"><article class="card accent-card"><span>Resultados</span><strong data-count>—</strong></article><article class="card"><span>Más barata</span><strong data-cheap>—</strong></article><article class="card"><span>Más cara</span><strong data-expensive>—</strong></article></section>
-      <section class="content-grid"><article class="panel large"><h2 data-title>Resultados</h2><p class="state" data-status>Cargando…</p><div class="cards-list" data-results></div></article><article class="panel map-panel"><h2>Mapa</h2><iframe title="Mapa" loading="lazy" data-map></iframe></article></section>
-      <section class="content-grid"><article class="panel"><h2>Gráfica</h2><div class="chart" data-chart></div></article><article class="panel"><h2>Utilidades</h2><p>Compara precios y estima ahorro por depósito.</p></article></section>
-    </section>
+    <GasolinaApp mode="home" locale={defaultLocale} />
   </Container>
-  <AppScript src={withBasePath('gasolina-app.js')} />
 </BaseLayout>
