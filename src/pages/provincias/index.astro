@@ -1,0 +1,12 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Container from '../../components/Container.astro';
+import GasolinaApp from '../../components/GasolinaApp.astro';
+import { defaultLocale } from '../../config/site';
+---
+
+<BaseLayout title="Provincias" description="Consulta precios medios, mínimos y máximos por provincia." locale={defaultLocale}>
+  <Container class="py-20">
+    <GasolinaApp mode="provinces" title="Provincias" description="Consulta precios medios, mínimos y máximos por provincia." locale={defaultLocale} />
+  </Container>
+</BaseLayout>
