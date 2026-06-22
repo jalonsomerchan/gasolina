@@ -1,7 +1,7 @@
 ---
 import AppScript from './AppScript.astro';
 import { gasolinaPages, getGasolinaCopy, type GasolinaMode } from '../data/gasolina';
-import { defaultLocale, siteConfig, type Locale } from '../config/site';
+import { defaultLocale, type Locale } from '../config/site';
 import { withBasePath } from '../utils/paths';
 
 interface Props {
@@ -30,6 +30,7 @@ const pageDescription = description ?? copy.description;
   data-mode={mode}
   data-api-base="https://alon.one/api/gasolina2"
   data-api-key={apiKey}
+  data-base-path={withBasePath('')}
   data-sw={withBasePath('sw.js')}
 >
   <div class="hero-panel">
@@ -56,7 +57,7 @@ const pageDescription = description ?? copy.description;
     </div>
     <datalist id="gasolina-suggestions" data-suggestions></datalist>
     <div class="filters">
-      <label>{copy.app.fuel}<select name="combustible"><option value="gasolina_95">Gasolina 95</option><option value="gasolina_98">Gasolina 98</option><option value="gasoleo_a">Gasóleo A</option></select></label>
+      <label>{copy.app.fuel}<select name="combustible"><option value="gasolina_95">Gasolina 95</option><option value="gasolina_98">Gasolina 98</option><option value="gasoleo_a">Gasoleo A</option></select></label>
       <label>{copy.app.province}<input name="provincia" /></label>
       <label>{copy.app.municipality}<input name="municipio" /></label>
       <label>{copy.app.radius}<input name="radio_km" inputmode="decimal" value="10" /></label>
