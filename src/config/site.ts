@@ -11,7 +11,7 @@ export const localeLabels: Record<Locale, string> = {
 export const siteConfig = {
   name: 'Gasolina al día',
   description: 'PWA para consultar precios de combustible en España.',
-  url: import.meta.env.ASTRO_SITE ?? 'https://jalonsomerchan.github.io',
+  url: import.meta.env.ASTRO_SITE ?? 'https://gasolineras.alon.one',
   base: import.meta.env.ASTRO_BASE ?? '/',
   repositoryUrl: import.meta.env.PUBLIC_REPOSITORY_URL ?? 'https://github.com/jalonsomerchan/gasolina',
   author: 'Jorge Alonso',

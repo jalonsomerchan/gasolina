@@ -2,6 +2,8 @@
 
 PWA hecha con Astro para consultar precios de combustible en Espana usando la API `https://alon.one/api/gasolina2/`.
 
+Dominio de produccion: `https://gasolineras.alon.one`.
+
 ## Funcionalidades
 
 - Portada con favoritos guardados y ranking si no hay favoritos.
@@ -39,6 +41,14 @@ PUBLIC_GASOLINA_API_KEY=pon_aqui_la_clave
 ```
 
 En GitHub se puede anadir como secret o variable del repositorio con el nombre `PUBLIC_GASOLINA_API_KEY` para que este disponible durante el build.
+
+## Dominio y despliegue
+
+El proyecto esta preparado para publicarse en el dominio raiz `https://gasolineras.alon.one`.
+
+- `ASTRO_SITE` debe ser `https://gasolineras.alon.one`.
+- `ASTRO_BASE` debe ser `/`.
+- `public/CNAME` contiene `gasolineras.alon.one` para GitHub Pages.
 
 ## Requisitos
 
