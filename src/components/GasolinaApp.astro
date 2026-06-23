@@ -28,6 +28,7 @@ const {
 } = Astro.props;
 const copy = getGasolinaCopy(locale);
 const apiKey = import.meta.env.PUBLIC_GASOLINA_API_KEY ?? '';
+const ipApiBase = import.meta.env.PUBLIC_IP_API_BASE ?? 'http://ip-api.com/json';
 const pageTitle = title ?? copy.title;
 const pageDescription = description ?? copy.description;
 ---
@@ -38,6 +39,8 @@ const pageDescription = description ?? copy.description;
   data-mode={mode}
   data-api-base="https://alon.one/api/gasolina2"
   data-api-key={apiKey}
+  data-ip-api-base={ipApiBase}
+  data-ip-api-lang={locale}
   data-base-path={withBasePath('')}
   data-sw={withBasePath('sw.js')}
   data-empty-label={copy.app.empty}
@@ -48,6 +51,10 @@ const pageDescription = description ?? copy.description;
   data-place-saved-label={copy.app.placeSaved}
   data-location-label={copy.app.location}
   data-location-error-label={copy.app.locationError}
+  data-device-location-short={copy.app.deviceLocationShort}
+  data-ip-location-label={copy.app.ipLocation}
+  data-ip-location-short={copy.app.ipLocationShort}
+  data-nearby-title={copy.app.bestNearYou}
   data-demo-notice={copy.app.demoNotice}
 >
   <div class="gasolina-phone">
