@@ -12,7 +12,14 @@ export function getBasePath() {
 }
 
 export function withBasePath(path: string, basePath = getBasePath()) {
-  return joinPathSegments(basePath, path);
+  const hasTrailingSlash = path === '' || path.endsWith('/');
+  const joinedPath = joinPathSegments(basePath, path);
+
+  if (hasTrailingSlash || joinedPath === '/') {
+    return joinedPath;
+  }
+
+  return joinedPath.replace(/\/$/, '');
 }
 
 export function stripBasePath(pathname: string, basePath = getBasePath()) {
