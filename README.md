@@ -61,6 +61,12 @@ npm ci
 | `npm run format:check` | Comprueba formato |
 | `npm run clean` | Borra `dist` y `.astro` |
 
+## Traducciones e idiomas
+
+El proyecto mantiene el sistema i18n de la plantilla Astro. Las traducciones visibles de la plantilla estan en `src/i18n/translations` y cualquier texto nuevo reutilizable debe existir en todos los idiomas configurados.
+
+La PWA centraliza sus textos de interfaz en `src/data/gasolina.ts` para mantenerlos alineados por idioma.
+
 ## Documentacion para agentes IA
 
 Antes de modificar el proyecto, una IA debe leer `agents.md` y las guias de `docs/` que apliquen.
