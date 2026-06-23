@@ -159,6 +159,18 @@ describe('project smoke checks', () => {
     assert.match(robots, /sitemap-index\.xml/);
   });
 
+  it('keeps public asset file URLs without a trailing slash', () => {
+    const pathHelpers = readText('src/utils/paths.ts');
+
+    ['favicon.svg', 'favicon.ico', 'manifest.webmanifest', 'gasolina-app.js', 'sw.js'].forEach((asset) => {
+      assert.match(pathHelpers, new RegExp(`withBasePath`));
+      assert.doesNotMatch(asset, /\/$/);
+    });
+
+    assert.match(pathHelpers, /path\.endsWith\('\/'\)/);
+    assert.match(pathHelpers, /replace\(\/\\\/\$\//);
+  });
+
   it('keeps starter links and labels configurable or translated', () => {
     const siteConfig = readText('src/config/site.ts');
     const header = readText('src/components/Header.astro');
