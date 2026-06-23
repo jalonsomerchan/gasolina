@@ -15,6 +15,6 @@ const { copy } = Astro.props;
   </div>
   <button class="location-pill" type="button" data-nearby>
     <span aria-hidden="true">⌖</span>
-    {copy.app.locationShort}
+    <span data-location-name>{copy.app.locationShort}</span>
   </button>
 </header>

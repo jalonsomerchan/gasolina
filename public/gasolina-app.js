@@ -2,6 +2,7 @@ const root = document.querySelector('[data-gasolina-app]');
 if (root) {
   const apiBase = (root.dataset.apiBase || 'https://alon.one/api/gasolina2').replace(/\/$/, '');
   const apiKey = root.dataset.apiKey || '';
+  const ipApiBase = (root.dataset.ipApiBase || 'http://ip-api.com/json').replace(/\/$/, '');
   const appBase = root.dataset.basePath || '/';
   const mode = root.dataset.mode || 'home';
   const params = new URLSearchParams(location.search);
@@ -18,6 +19,7 @@ if (root) {
   const readFavs = () => { try { return JSON.parse(localStorage.getItem(storeKey) || '{"stations":[],"places":[]}'); } catch { return { stations: [], places: [] }; } };
   const writeFavs = (value) => localStorage.setItem(storeKey, JSON.stringify(value));
   const setStatus = (text) => { const el = $('[data-status]'); if (el) el.textContent = text; };
+  const nearbyTitle = () => label('nearbyTitle', 'Mejor precio cerca de ti');
   const logoFor = (title) => {
     const key = String(title || '').toLowerCase();
     if (key.includes('repsol')) return `${appBase}station-logos/repsol.png`;
@@ -159,37 +161,95 @@ if (root) {
     return render(data, label('resultsLabel', 'Mejor precio cerca de ti'));
   }
 
-  function loadNearby() {
+  function updateLocationName(name) {
+    const locationName = $('[data-location-name]');
+    if (locationName && name) locationName.textContent = name;
+  }
+
+  function getDeviceLocation() {
+    if (!navigator.geolocation) return Promise.resolve(null);
+
+    return new Promise((resolve) => {
+      navigator.geolocation.getCurrentPosition(
+        ({ coords }) => resolve({
+          latitude: coords.latitude,
+          longitude: coords.longitude,
+          name: label('deviceLocationShort', 'Mi zona'),
+        }),
+        () => resolve(null),
+        { enableHighAccuracy: false, maximumAge: 900000, timeout: 6500 }
+      );
+    });
+  }
+
+  async function getIpLocation() {
+    const url = new URL(ipApiBase, location.origin);
+    url.searchParams.set('fields', 'status,message,lat,lon,city,regionName,countryCode');
+    url.searchParams.set('lang', root.dataset.ipApiLang || 'es');
+
+    const response = await fetch(url.toString(), { cache: 'no-store' });
+    if (!response.ok) return null;
+
+    const data = await response.json();
+    const latitude = Number(data.lat);
+    const longitude = Number(data.lon);
+    if (data.status !== 'success' || !Number.isFinite(latitude) || !Number.isFinite(longitude)) return null;
+
+    return {
+      latitude,
+      longitude,
+      name: [data.city, data.regionName].filter(Boolean).join(', ') || label('ipLocationShort', 'Tu zona'),
+    };
+  }
+
+  async function renderNearby(position) {
+    const data = await api('cercanas', {
+      latitud: position.latitude,
+      longitud: position.longitude,
+      radio_km: $('[name=radio_km]').value || 10,
+      combustible: fuel(),
+      order: $('[name=orden]')?.value || 'precio_asc',
+      limit: 80,
+    });
+    updateLocationName(position.name);
+    render(data, nearbyTitle());
+  }
+
+  async function loadNearby() {
     setStatus(label('locationLabel', 'Buscando ubicación…'));
-    if (!apiKey || !navigator.geolocation) {
-      render(demoStations, 'Mejor precio cerca de ti');
+    if (!apiKey) {
+      render(demoStations, nearbyTitle());
       return;
     }
-    navigator.geolocation.getCurrentPosition(async ({ coords }) => {
-      const data = await api('cercanas', {
-        latitud: coords.latitude,
-        longitud: coords.longitude,
-        radio_km: $('[name=radio_km]').value || 10,
-        combustible: fuel(),
-        order: 'precio_asc',
-        limit: 80,
-      });
-      render(data, 'Mejor precio cerca de ti');
-    }, () => {
-      setStatus(label('locationErrorLabel', 'No se pudo obtener la ubicación.'));
-      render(demoStations, 'Mejor precio cerca de ti');
-    });
+
+    const devicePosition = await getDeviceLocation();
+    if (devicePosition) {
+      await renderNearby(devicePosition);
+      return;
+    }
+
+    setStatus(label('ipLocationLabel', 'Usando ubicación aproximada por IP…'));
+    try {
+      const ipPosition = await getIpLocation();
+      if (ipPosition) {
+        await renderNearby(ipPosition);
+        return;
+      }
+    } catch {}
+
+    setStatus(label('locationErrorLabel', 'No se pudo obtener la ubicación.'));
+    render(demoStations, nearbyTitle());
   }
 
   async function refresh() {
     setStatus(label('loadingLabel', 'Cargando…'));
     try {
-      if (mode === 'nearby') loadNearby();
+      if (mode === 'home' || mode === 'nearby') await loadNearby();
       else if (mode === 'stations') await loadStations();
       else await loadRanking();
     } catch (error) {
       setStatus(error.message);
-      render(demoStations, 'Mejor precio cerca de ti');
+      render(demoStations, nearbyTitle());
     }
   }
 
