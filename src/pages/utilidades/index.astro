@@ -1,0 +1,12 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Container from '../../components/Container.astro';
+import GasolinaApp from '../../components/GasolinaApp.astro';
+import { defaultLocale } from '../../config/site';
+---
+
+<BaseLayout title="Utilidades" description="Calcula el ahorro por deposito y consulta herramientas rapidas." locale={defaultLocale}>
+  <Container class="py-20">
+    <GasolinaApp mode="tools" title="Utilidades" description="Calcula el ahorro por deposito y consulta herramientas rapidas." locale={defaultLocale} />
+  </Container>
+</BaseLayout>
