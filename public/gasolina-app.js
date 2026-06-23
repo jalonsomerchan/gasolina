@@ -2,7 +2,11 @@ const root = document.querySelector('[data-gasolina-app]');
 if (root) {
   const apiBase = (root.dataset.apiBase || 'https://alon.one/api/gasolina2').replace(/\/$/, '');
   const apiKey = root.dataset.apiKey || '';
-  const ipApiBase = (root.dataset.ipApiBase || 'http://ip-api.com/json').replace(/\/$/, '');
+  const defaultIpApiBase = 'https://ipapi.co/json/';
+  const ipApiBases = [root.dataset.ipApiBase, defaultIpApiBase]
+    .map((value) => String(value || '').trim())
+    .filter(Boolean)
+    .filter((value, index, values) => values.indexOf(value) === index);
   const appBase = root.dataset.basePath || '/';
   const mode = root.dataset.mode || 'home';
   const params = new URLSearchParams(location.search);
@@ -182,24 +186,54 @@ if (root) {
     });
   }
 
-  async function getIpLocation() {
-    const url = new URL(ipApiBase, location.origin);
-    url.searchParams.set('fields', 'status,message,lat,lon,city,regionName,countryCode');
-    url.searchParams.set('lang', root.dataset.ipApiLang || 'es');
+  function buildIpApiUrl(base) {
+    let url;
+    try {
+      url = new URL(base, location.origin);
+    } catch {
+      return null;
+    }
 
-    const response = await fetch(url.toString(), { cache: 'no-store' });
-    if (!response.ok) return null;
+    if (!['http:', 'https:'].includes(url.protocol)) return null;
+    if (location.protocol === 'https:' && url.protocol !== 'https:') return null;
 
-    const data = await response.json();
-    const latitude = Number(data.lat);
-    const longitude = Number(data.lon);
-    if (data.status !== 'success' || !Number.isFinite(latitude) || !Number.isFinite(longitude)) return null;
+    const isIpApiEndpoint = url.hostname.includes('ip-api.com') || url.pathname.includes('ip-api.com');
+    if (isIpApiEndpoint) {
+      url.searchParams.set('fields', 'status,message,lat,lon,city,regionName,countryCode');
+      url.searchParams.set('lang', root.dataset.ipApiLang || 'es');
+    }
+
+    return url;
+  }
+
+  function parseIpLocation(data) {
+    const latitude = Number(data?.lat ?? data?.latitude);
+    const longitude = Number(data?.lon ?? data?.longitude);
+    const failed = (data?.status && data.status !== 'success') || data?.success === false || data?.error === true;
+    if (failed || !Number.isFinite(latitude) || !Number.isFinite(longitude)) return null;
 
     return {
       latitude,
       longitude,
-      name: [data.city, data.regionName].filter(Boolean).join(', ') || label('ipLocationShort', 'Tu zona'),
+      name: [data.city, data.regionName ?? data.region].filter(Boolean).join(', ') || label('ipLocationShort', 'Tu zona'),
     };
+  }
+
+  async function getIpLocation() {
+    for (const base of ipApiBases) {
+      const url = buildIpApiUrl(base);
+      if (!url) continue;
+
+      try {
+        const response = await fetch(url.toString(), { cache: 'no-store' });
+        if (!response.ok) continue;
+
+        const position = parseIpLocation(await response.json());
+        if (position) return position;
+      } catch {}
+    }
+
+    return null;
   }
 
   async function renderNearby(position) {
@@ -229,13 +263,11 @@ if (root) {
     }
 
     setStatus(label('ipLocationLabel', 'Usando ubicación aproximada por IP…'));
-    try {
-      const ipPosition = await getIpLocation();
-      if (ipPosition) {
-        await renderNearby(ipPosition);
-        return;
-      }
-    } catch {}
+    const ipPosition = await getIpLocation();
+    if (ipPosition) {
+      await renderNearby(ipPosition);
+      return;
+    }
 
     setStatus(label('locationErrorLabel', 'No se pudo obtener la ubicación.'));
     render(demoStations, nearbyTitle());
