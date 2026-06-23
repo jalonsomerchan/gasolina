@@ -1,0 +1,18 @@
+---
+import type { GasolinaCopy } from '../../data/gasolina';
+
+interface Props {
+  copy: GasolinaCopy;
+}
+
+const { copy } = Astro.props;
+---
+
+<section class="savings-strip">
+  <label>{copy.app.liters}<input name="litros" inputmode="decimal" value="50" /></label>
+  <label>{copy.app.priceDifference}<input name="diferencia" inputmode="decimal" value="0.10" /></label>
+  <article>
+    <span>{copy.app.saving}</span>
+    <strong data-saving>—</strong>
+  </article>
+</section>

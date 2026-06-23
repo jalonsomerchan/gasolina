@@ -5,8 +5,8 @@ import GasolinaApp from '../../components/GasolinaApp.astro';
 import { defaultLocale } from '../../config/site';
 ---
 
-<BaseLayout title="Gasolineras" description="Busca gasolineras por municipio, provincia, rótulo o dirección." locale={defaultLocale}>
-  <Container class="py-20">
+<BaseLayout title="Gasolineras" description="Busca gasolineras por municipio, provincia, rótulo o dirección." locale={defaultLocale} chrome={false}>
+  <Container class="app-screen">
     <GasolinaApp mode="stations" title="Gasolineras" description="Busca gasolineras por municipio, provincia, rótulo o dirección." locale={defaultLocale} />
   </Container>
 </BaseLayout>

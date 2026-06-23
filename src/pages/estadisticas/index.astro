@@ -5,8 +5,8 @@ import GasolinaApp from '../../components/GasolinaApp.astro';
 import { defaultLocale } from '../../config/site';
 ---
 
-<BaseLayout title="Estadisticas" description="Datos globales, extremos, actualizacion y tendencia de precios." locale={defaultLocale}>
-  <Container class="py-20">
+<BaseLayout title="Estadisticas" description="Datos globales, extremos, actualizacion y tendencia de precios." locale={defaultLocale} chrome={false}>
+  <Container class="app-screen">
     <GasolinaApp mode="stats" title="Estadisticas" description="Datos globales, extremos, actualizacion y tendencia de precios." locale={defaultLocale} />
   </Container>
 </BaseLayout>

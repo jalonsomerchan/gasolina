@@ -1,0 +1,34 @@
+---
+import type { GasolinaCopy } from '../../data/gasolina';
+
+interface Props {
+  copy: GasolinaCopy;
+}
+
+const { copy } = Astro.props;
+---
+
+<section class="price-radar" aria-label={copy.app.summaryLabel}>
+  <div class="radar-heading">
+    <h2>{copy.app.radar}</h2>
+    <span data-update>{copy.app.demoUpdate}</span>
+  </div>
+  <div class="radar-grid">
+    <article>
+      <span>{copy.app.cheapest}</span>
+      <strong data-cheap>—</strong>
+      <small data-cheap-delta>—</small>
+    </article>
+    <article>
+      <span>{copy.app.average}</span>
+      <strong data-average>—</strong>
+      <small>{copy.app.selectedFuel}</small>
+    </article>
+    <article>
+      <span>{copy.app.expensive}</span>
+      <strong class="danger" data-expensive>—</strong>
+      <small data-range>—</small>
+    </article>
+  </div>
+  <p class="radar-foot"><span data-count>—</span> {copy.app.stationsAnalyzed}</p>
+</section>

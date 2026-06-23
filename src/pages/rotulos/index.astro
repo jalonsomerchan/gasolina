@@ -5,8 +5,8 @@ import GasolinaApp from '../../components/GasolinaApp.astro';
 import { defaultLocale } from '../../config/site';
 ---
 
-<BaseLayout title="Rótulos" description="Estadísticas por marca o rótulo de gasolinera." locale={defaultLocale}>
-  <Container class="py-20">
+<BaseLayout title="Rótulos" description="Estadísticas por marca o rótulo de gasolinera." locale={defaultLocale} chrome={false}>
+  <Container class="app-screen">
     <GasolinaApp mode="brands" title="Rótulos" description="Estadísticas por marca o rótulo de gasolinera." locale={defaultLocale} />
   </Container>
 </BaseLayout>

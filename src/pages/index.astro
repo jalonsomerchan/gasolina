@@ -5,8 +5,8 @@ import GasolinaApp from '../components/GasolinaApp.astro';
 import { defaultLocale, siteConfig } from '../config/site';
 ---
 
-<BaseLayout title={siteConfig.name} description={siteConfig.description} locale={defaultLocale}>
-  <Container class="py-20">
+<BaseLayout title={siteConfig.name} description={siteConfig.description} locale={defaultLocale} chrome={false}>
+  <Container class="app-screen">
     <GasolinaApp mode="home" locale={defaultLocale} />
     <p class="sr-only">
       <a href={siteConfig.repositoryUrl}>Repositorio del proyecto</a>

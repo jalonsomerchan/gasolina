@@ -29,6 +29,7 @@ type Copy = {
   title: string;
   description: string;
   pages: Record<PageKey, string>;
+  navIcons: Record<PageKey, string>;
   hero: { eyebrow: string; title: string; text: string; primary: string; secondary: string };
   app: Record<string, string>;
 };
@@ -38,15 +39,17 @@ const copy: Record<Locale, Copy> = {
     title: 'Gasolina al día',
     description: 'Consulta precios de combustible en España con mapas, histórico, favoritos y comparativas.',
     pages: { home: 'Inicio', stations: 'Gasolineras', provinces: 'Provincias', municipalities: 'Municipios', station: 'Gasolinera', nearby: 'Cercanas', ranking: 'Ranking', brands: 'Rótulos', compare: 'Comparador', favorites: 'Favoritos', stats: 'Estadísticas', tools: 'Utilidades' },
+    navIcons: { home: '⌾', stations: '▥', provinces: '⌂', municipalities: '⌖', station: '·', nearby: '⌁', ranking: '≡', brands: '◌', compare: '⇄', favorites: '♡', stats: '▥', tools: '▦' },
     hero: { eyebrow: 'PWA', title: 'Encuentra el mejor precio antes de repostar', text: 'Busca, compara y guarda favoritos.', primary: 'Buscar cercanas', secondary: 'Ver estadísticas' },
-    app: { searchPlaceholder: 'Municipio, provincia, rótulo o dirección', searchLabel: 'Buscar', fuel: 'Combustible', province: 'Provincia', municipality: 'Municipio', radius: 'Radio km', results: 'Resultados', map: 'Mapa', chart: 'Histórico', utilities: 'Utilidades', cheapest: 'Más barata', expensive: 'Más cara', loading: 'Cargando…', empty: 'Sin datos.', liters: 'Litros', priceDifference: 'Diferencia €/l' },
+    app: { searchPlaceholder: 'Busca zona o dirección', searchLabel: 'Buscar', fuel: 'Combustible', province: 'Provincia', municipality: 'Municipio', anyProvince: 'Todas', anyMunicipality: 'Todos', radius: 'Radio', results: 'Resultados', summaryLabel: 'Resumen de precios', navLabel: 'Secciones de gasolina', map: 'Mapa', centerMap: 'Centrar', viewList: 'Ver lista', chart: 'Histórico gasolina 95', utilities: 'Utilidades', cheapest: 'Más barata', average: 'Media', expensive: 'Más cara', selectedFuel: 'Gasolina 95', radar: 'Radar de precios', stationsAnalyzed: 'estaciones analizadas', bestNearYou: 'Mejor precio cerca de ti', sort: 'Ordenar', price: 'Precio', distance: 'Distancia', filters: 'Filtros rápidos', all: 'Todas', underPrice: '< 1,65 €', openNow: 'Cercanas', historyShort: 'Histórico', saving: 'Ahorro 50L', loading: 'Cargando…', empty: 'Sin datos.', detail: 'Detalle', viewZone: 'Ver zona', stationSaved: 'Gasolinera guardada.', placeSaved: 'Zona guardada.', location: 'Buscando ubicación…', locationShort: 'Madrid', locationError: 'No se pudo obtener la ubicación.', demoUpdate: 'Hoy 08:45', demoNotice: 'Demo visual sin API key', liters: 'Litros', priceDifference: 'Diferencia €/l' },
   },
   en: {
     title: 'Fuel Prices Daily',
     description: 'Check fuel prices in Spain with maps, history, favorites and comparisons.',
     pages: { home: 'Home', stations: 'Stations', provinces: 'Provinces', municipalities: 'Municipalities', station: 'Station', nearby: 'Nearby', ranking: 'Ranking', brands: 'Brands', compare: 'Compare', favorites: 'Favorites', stats: 'Stats', tools: 'Tools' },
+    navIcons: { home: '⌾', stations: '▥', provinces: '⌂', municipalities: '⌖', station: '·', nearby: '⌁', ranking: '≡', brands: '◌', compare: '⇄', favorites: '♡', stats: '▥', tools: '▦' },
     hero: { eyebrow: 'PWA', title: 'Find the best price before filling up', text: 'Search, compare and save favorites.', primary: 'Find nearby', secondary: 'View stats' },
-    app: { searchPlaceholder: 'Municipality, province, brand or address', searchLabel: 'Search', fuel: 'Fuel', province: 'Province', municipality: 'Municipality', radius: 'Radius km', results: 'Results', map: 'Map', chart: 'History', utilities: 'Tools', cheapest: 'Cheapest', expensive: 'Most expensive', loading: 'Loading…', empty: 'No data.', liters: 'Liters', priceDifference: 'Difference €/l' },
+    app: { searchPlaceholder: 'Search area or address', searchLabel: 'Search', fuel: 'Fuel', province: 'Province', municipality: 'Municipality', anyProvince: 'All', anyMunicipality: 'All', radius: 'Radius', results: 'Results', summaryLabel: 'Price summary', navLabel: 'Fuel app sections', map: 'Map', centerMap: 'Center', viewList: 'View list', chart: 'Fuel 95 history', utilities: 'Tools', cheapest: 'Cheapest', average: 'Average', expensive: 'Most expensive', selectedFuel: 'Fuel 95', radar: 'Price radar', stationsAnalyzed: 'stations analyzed', bestNearYou: 'Best price near you', sort: 'Sort', price: 'Price', distance: 'Distance', filters: 'Quick filters', all: 'All', underPrice: '< €1.65', openNow: 'Nearby', historyShort: 'History', saving: '50L saving', loading: 'Loading…', empty: 'No data.', detail: 'Detail', viewZone: 'View area', stationSaved: 'Station saved.', placeSaved: 'Area saved.', location: 'Finding location…', locationShort: 'Madrid', locationError: 'Could not get location.', demoUpdate: 'Today 08:45', demoNotice: 'Visual demo without API key', liters: 'Liters', priceDifference: 'Difference €/l' },
   },
 };
 

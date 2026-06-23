@@ -1,0 +1,574 @@
+.app-screen {
+  min-height: 100dvh;
+  padding: 0;
+}
+
+.gasolina-app {
+  min-height: 100dvh;
+  background:
+    radial-gradient(circle at 50% -10%, rgb(45 212 191 / .13), transparent 34rem),
+    linear-gradient(180deg, #07110f 0%, #030606 100%);
+  color: #f6fbf9;
+}
+
+.gasolina-phone {
+  display: grid;
+  gap: 1rem;
+  width: min(100%, 54rem);
+  margin: 0 auto;
+  padding: 1.4rem 1rem 1.4rem;
+}
+
+.gasolina-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.gasolina-topbar h1 {
+  margin: 0;
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.app-kicker {
+  margin: 0 0 .3rem;
+  color: #69dfd0;
+  font-size: .72rem;
+  font-weight: 850;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.location-pill,
+.icon-button,
+.map-action,
+.quick-filters button,
+.quick-filters a {
+  border: 1px solid rgb(255 255 255 / .16);
+  border-radius: 999px;
+  background: rgb(255 255 255 / .055);
+  color: #f8fffc;
+  font: inherit;
+  font-weight: 780;
+  text-decoration: none;
+}
+
+.location-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: .45rem;
+  min-height: 3rem;
+  padding: 0 1rem;
+}
+
+.control-panel {
+  display: grid;
+  gap: .72rem;
+}
+
+.searchbar {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: .7rem;
+  min-height: 3.7rem;
+  border: 1px solid rgb(255 255 255 / .15);
+  border-radius: 1.25rem;
+  padding: 0 .55rem 0 1rem;
+  background: rgb(255 255 255 / .065);
+  color: #8a9692;
+}
+
+.searchbar input,
+.quiet-input input,
+.select-pill select,
+.sheet-heading select,
+.savings-strip input {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  color: #f8fffc;
+  font: inherit;
+}
+
+.searchbar input {
+  min-width: 0;
+  outline: 0;
+  font-size: .95rem;
+}
+
+.searchbar input::placeholder,
+.quiet-input input::placeholder {
+  color: #8a9692;
+}
+
+.icon-button {
+  width: 2.7rem;
+  min-height: 2.7rem;
+  color: #74eadb;
+}
+
+.control-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: .62rem;
+}
+
+.select-pill,
+.quiet-input {
+  display: grid;
+  gap: .32rem;
+  border: 1px solid rgb(255 255 255 / .15);
+  border-radius: 1rem;
+  padding: .72rem .88rem;
+  background: rgb(255 255 255 / .055);
+  color: #9ca8a5;
+  font-size: .72rem;
+  font-weight: 760;
+  text-transform: uppercase;
+}
+
+.select-pill select,
+.quiet-input input {
+  min-height: 1.8rem;
+  color: #f8fffc;
+  font-size: 1rem;
+  font-weight: 760;
+  text-transform: none;
+}
+
+.map-stage {
+  position: relative;
+  min-height: 23rem;
+  overflow: hidden;
+  border-block: 1px solid rgb(255 255 255 / .08);
+  margin-inline: -1rem;
+  background:
+    linear-gradient(90deg, rgb(45 212 191 / .12) 1px, transparent 1px),
+    linear-gradient(0deg, rgb(45 212 191 / .1) 1px, transparent 1px),
+    radial-gradient(circle at center, rgb(59 130 246 / .18), transparent 6rem),
+    #111b1e;
+  background-size: 3rem 3rem, 3rem 3rem, auto, auto;
+}
+
+.map-stage iframe {
+  width: 100%;
+  height: 100%;
+  min-height: 23rem;
+  border: 0;
+  opacity: .44;
+  filter: saturate(.7) invert(.92) hue-rotate(145deg) brightness(.62);
+}
+
+.map-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.price-pin {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  border: 2px solid rgb(116 234 219 / .88);
+  border-radius: .7rem;
+  padding: .28rem .5rem;
+  background: rgb(9 50 45 / .9);
+  color: #dbfffb;
+  font-size: .88rem;
+  font-weight: 900;
+  box-shadow: 0 12px 26px rgb(0 0 0 / .32);
+}
+
+.price-pin.is-warn {
+  border-color: rgb(249 115 22 / .9);
+  background: rgb(91 42 12 / .92);
+}
+
+.map-actions {
+  position: absolute;
+  right: 1rem;
+  bottom: 1rem;
+  display: flex;
+  gap: .55rem;
+}
+
+.map-action {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.65rem;
+  padding: 0 .95rem;
+  background: rgb(2 8 7 / .7);
+  color: #74eadb;
+}
+
+.station-sheet,
+.price-radar,
+.data-panel,
+.savings-strip {
+  border: 1px solid rgb(255 255 255 / .13);
+  border-radius: 1.45rem;
+  background: #0b1412;
+  box-shadow: 0 22px 50px rgb(0 0 0 / .28);
+}
+
+.station-sheet {
+  position: relative;
+  display: grid;
+  gap: .75rem;
+  margin-top: -4.8rem;
+  padding: .7rem .75rem 1rem;
+  z-index: 1;
+}
+
+.sheet-handle {
+  justify-self: center;
+  width: 3.2rem;
+  height: .32rem;
+  border-radius: 999px;
+  background: rgb(255 255 255 / .28);
+}
+
+.sheet-heading,
+.radar-heading,
+.panel-title {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.sheet-heading h2,
+.radar-heading h2,
+.panel-title h2 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.state,
+.sheet-heading label,
+.radar-heading span,
+.radar-grid span,
+.radar-grid small,
+.radar-foot,
+.station-card p,
+.station-card small,
+.panel-title span {
+  color: #a6b2ae;
+}
+
+.sheet-heading label {
+  display: grid;
+  gap: .2rem;
+  min-width: 6.4rem;
+  font-size: .72rem;
+  font-weight: 760;
+  text-transform: uppercase;
+}
+
+.cards-list {
+  display: grid;
+}
+
+.station-card {
+  display: grid;
+  grid-template-columns: 1.9rem 2.35rem minmax(0, 1fr) auto 2.2rem;
+  align-items: center;
+  gap: .55rem;
+  border-top: 1px solid rgb(255 255 255 / .09);
+  padding: .82rem 0;
+}
+
+.station-card:first-child {
+  border-top: 0;
+}
+
+.station-rank,
+.station-logo {
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  font-weight: 900;
+}
+
+.station-rank {
+  width: 2rem;
+  height: 2rem;
+  background: #2dd4bf;
+  color: #03110f;
+}
+
+.station-logo {
+  display: grid;
+  width: 2.35rem;
+  height: 2.35rem;
+  border: 1px solid rgb(255 255 255 / .14);
+  background: rgb(255 255 255 / .08);
+  color: #f8fffc;
+  object-fit: cover;
+}
+
+.station-card h3,
+.station-card p {
+  margin: 0;
+}
+
+.station-card h3 {
+  overflow-wrap: anywhere;
+  font-size: .98rem;
+  line-height: 1.2;
+}
+
+.station-card p,
+.station-card small {
+  overflow-wrap: anywhere;
+  line-height: 1.22;
+}
+
+.station-card h3 a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.station-price {
+  text-align: right;
+}
+
+.station-price strong {
+  display: block;
+  color: #54dfcf;
+  font-size: 1.18rem;
+  line-height: 1;
+}
+
+.station-price small {
+  display: block;
+  margin-top: .28rem;
+  max-width: 4.4rem;
+  color: #f97316;
+  font-size: .72rem;
+}
+
+.fav-button {
+  width: 2.2rem;
+  min-height: 2.2rem;
+  border: 1px solid rgb(255 255 255 / .16);
+  border-radius: 999px;
+  background: transparent;
+  color: #f8fffc;
+}
+
+.quick-filters {
+  display: flex;
+  gap: .55rem;
+  overflow-x: auto;
+  padding-top: .2rem;
+  scrollbar-width: none;
+}
+
+.quick-filters::-webkit-scrollbar {
+  display: none;
+}
+
+.quick-filters button,
+.quick-filters a {
+  flex: 0 0 auto;
+  min-height: 2.45rem;
+  padding: 0 .9rem;
+  color: #d9e4e0;
+}
+
+.quick-filters button:first-child {
+  border-color: #2dd4bf;
+  color: #74eadb;
+}
+
+.price-radar,
+.data-panel,
+.savings-strip {
+  padding: 1rem;
+}
+
+.radar-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: .7rem;
+  margin-top: .95rem;
+}
+
+.radar-grid article {
+  border-left: 1px solid rgb(255 255 255 / .12);
+  padding-left: .7rem;
+}
+
+.radar-grid article:first-child {
+  border-left: 0;
+  padding-left: 0;
+}
+
+.radar-grid strong {
+  display: block;
+  margin: .32rem 0;
+  color: #54dfcf;
+  font-size: clamp(1.35rem, 5vw, 2.15rem);
+  line-height: 1;
+}
+
+.radar-grid .danger {
+  color: #fb923c;
+}
+
+.radar-foot {
+  margin: .9rem 0 0;
+  border-top: 1px solid rgb(255 255 255 / .09);
+  padding-top: .75rem;
+  text-align: center;
+}
+
+.chart {
+  display: flex;
+  align-items: end;
+  gap: .28rem;
+  min-height: 8.8rem;
+  margin-top: .9rem;
+  border-radius: 1rem;
+  padding: .8rem;
+  background: linear-gradient(180deg, rgb(45 212 191 / .08), rgb(255 255 255 / .02));
+}
+
+.chart span {
+  flex: 1;
+  min-width: .32rem;
+  min-height: 2rem;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #b8fff6, #2dd4bf 45%, #197a70);
+  box-shadow: 0 0 20px rgb(45 212 191 / .26);
+}
+
+.savings-strip {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: .8rem;
+}
+
+.savings-strip label,
+.savings-strip article {
+  display: grid;
+  gap: .25rem;
+  color: #a6b2ae;
+  font-size: .72rem;
+  font-weight: 760;
+  text-transform: uppercase;
+}
+
+.savings-strip input {
+  min-width: 0;
+  color: #f8fffc;
+  font-size: 1.1rem;
+  font-weight: 850;
+}
+
+.savings-strip strong {
+  color: #86efac;
+  font-size: 1.25rem;
+}
+
+.bottom-nav {
+  z-index: 20;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: .15rem;
+  border: 1px solid rgb(255 255 255 / .13);
+  border-radius: 1.25rem;
+  padding: .42rem;
+  background: rgb(8 15 14 / .86);
+  backdrop-filter: blur(18px);
+}
+
+.bottom-nav a {
+  display: grid;
+  place-items: center;
+  gap: .22rem;
+  min-height: 3.4rem;
+  border-radius: .95rem;
+  color: #a6b2ae;
+  font-size: .62rem;
+  font-weight: 760;
+  text-decoration: none;
+}
+
+.bottom-nav span {
+  font-size: 1.25rem;
+}
+
+.bottom-nav a.is-active {
+  color: #74eadb;
+}
+
+.table-wrap {
+  display: none;
+}
+
+@media (min-width: 760px) {
+  .gasolina-phone {
+    grid-template-columns: minmax(0, .9fr) minmax(20rem, .62fr);
+    align-items: start;
+    width: min(100%, 72rem);
+    padding: 2rem 1.4rem 2rem;
+  }
+
+  .gasolina-topbar,
+  .control-panel,
+  .map-stage,
+  .bottom-nav {
+    grid-column: 1 / -1;
+  }
+
+  .map-stage {
+    min-height: 25rem;
+    border: 1px solid rgb(255 255 255 / .08);
+    border-radius: 1.6rem;
+    margin-inline: 0;
+  }
+
+  .station-sheet {
+    grid-column: 1;
+    margin-top: -6rem;
+  }
+
+  .station-card {
+    grid-template-columns: 2rem 3.2rem minmax(0, 1fr) auto 2.45rem;
+  }
+
+  .station-logo {
+    width: 3.2rem;
+    height: 3.2rem;
+  }
+
+  .price-radar .radar-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .price-radar .radar-grid article {
+    border-top: 1px solid rgb(255 255 255 / .12);
+    border-left: 0;
+    padding-top: .7rem;
+    padding-left: 0;
+  }
+
+  .price-radar .radar-grid article:first-child {
+    border-top: 0;
+    padding-top: 0;
+  }
+
+  .price-radar .radar-grid strong {
+    font-size: 2rem;
+  }
+
+  .price-radar,
+  .data-panel,
+  .savings-strip {
+    grid-column: 2;
+  }
+}

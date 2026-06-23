@@ -55,6 +55,7 @@ describe('project smoke checks', () => {
       'src/i18n/translations',
       'src/utils/paths.ts',
       'src/styles/global.css',
+      'public/sw.js',
     ].forEach((path) => {
       assert.equal(existsSync(join(root, path)), true, `${path} should exist`);
     });

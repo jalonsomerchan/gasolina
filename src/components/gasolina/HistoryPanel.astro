@@ -1,0 +1,17 @@
+---
+import type { GasolinaCopy } from '../../data/gasolina';
+
+interface Props {
+  copy: GasolinaCopy;
+}
+
+const { copy } = Astro.props;
+---
+
+<section class="data-panel" id="history-panel">
+  <div class="panel-title">
+    <h2>{copy.app.chart}</h2>
+    <span>7D</span>
+  </div>
+  <div class="chart" data-chart></div>
+</section>

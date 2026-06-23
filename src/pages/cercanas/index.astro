@@ -5,8 +5,8 @@ import GasolinaApp from '../../components/GasolinaApp.astro';
 import { defaultLocale } from '../../config/site';
 ---
 
-<BaseLayout title="Gasolineras cercanas" description="Encuentra las gasolineras más próximas a tu ubicación." locale={defaultLocale}>
-  <Container class="py-20">
+<BaseLayout title="Gasolineras cercanas" description="Encuentra las gasolineras más próximas a tu ubicación." locale={defaultLocale} chrome={false}>
+  <Container class="app-screen">
     <GasolinaApp mode="nearby" title="Gasolineras cercanas" description="Encuentra las gasolineras más próximas a tu ubicación." locale={defaultLocale} />
   </Container>
 </BaseLayout>

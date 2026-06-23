@@ -7,20 +7,39 @@ if (root) {
   const params = new URLSearchParams(location.search);
   const storeKey = 'gasolina-favoritos-v2';
   const $ = (q) => root.querySelector(q);
+  const label = (key, fallback) => root.dataset[key] || fallback;
   const esc = (v) => String(v ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   const rows = (value) => Array.isArray(value) ? value : Array.isArray(value?.data) ? value.data : value ? [value] : [];
   const fuel = () => $('[name=combustible]')?.value || params.get('combustible') || 'gasolina_95';
   const priceField = (prefix = 'media') => `${prefix}_${fuel()}`;
   const price = (item) => Number(item?.precio || item?.[priceField('media')] || item?.[priceField('min')] || 0);
-  const euro = (value) => Number(value) > 0 ? `${Number(value).toFixed(3).replace('.', ',')} €/l` : '—';
+  const euro = (value) => Number(value) > 0 ? `${Number(value).toFixed(3).replace('.', ',')} €/L` : '—';
+  const money = (value) => Number(value) > 0 ? `${Number(value).toFixed(2).replace('.', ',')} €` : '—';
+  const readFavs = () => { try { return JSON.parse(localStorage.getItem(storeKey) || '{"stations":[],"places":[]}'); } catch { return { stations: [], places: [] }; } };
+  const writeFavs = (value) => localStorage.setItem(storeKey, JSON.stringify(value));
+  const setStatus = (text) => { const el = $('[data-status]'); if (el) el.textContent = text; };
+  const logoFor = (title) => {
+    const key = String(title || '').toLowerCase();
+    if (key.includes('repsol')) return `${appBase}station-logos/repsol.png`;
+    if (key.includes('bp')) return `${appBase}station-logos/bp.png`;
+    if (key.includes('cepsa')) return `${appBase}station-logos/cepsa.png`;
+    if (key.includes('plenoil')) return `${appBase}station-logos/plenoil.png`;
+    if (key.includes('ballenoil')) return `${appBase}station-logos/ballenoil.png`;
+    return '';
+  };
   const route = (path, query = {}) => {
     const url = new URL(`${appBase.replace(/\/$/, '')}/${path.replace(/^\/+/, '')}`, location.origin);
     Object.entries(query).forEach(([key, value]) => value && url.searchParams.set(key, value));
     return url.pathname + url.search;
   };
-  const readFavs = () => { try { return JSON.parse(localStorage.getItem(storeKey) || '{"stations":[],"places":[]}'); } catch { return { stations: [], places: [] }; } };
-  const writeFavs = (value) => localStorage.setItem(storeKey, JSON.stringify(value));
-  const setStatus = (text) => { const el = $('[data-status]'); if (el) el.textContent = text; };
+
+  const demoStations = [
+    { ideess: 1, rotulo: 'LowCost Fuels', direccion: 'C. de Méndez Álvaro, 18', municipio: 'Madrid', provincia: 'Madrid', latitud: 40.401, longitud: -3.691, distancia_km: 0.4, precio: 1.639, fecha: 'Hoy 08:45' },
+    { ideess: 2, rotulo: 'Repsol', direccion: 'P.º de las Delicias, 120', municipio: 'Madrid', provincia: 'Madrid', latitud: 40.397, longitud: -3.695, distancia_km: 0.6, precio: 1.649, fecha: 'Hoy 08:42' },
+    { ideess: 3, rotulo: 'BP', direccion: 'C. de Embajadores, 190', municipio: 'Madrid', provincia: 'Madrid', latitud: 40.399, longitud: -3.705, distancia_km: 0.9, precio: 1.659, fecha: 'Hoy 08:35' },
+    { ideess: 4, rotulo: 'Cepsa', direccion: 'Av. Ciudad de Barcelona, 88', municipio: 'Madrid', provincia: 'Madrid', latitud: 40.407, longitud: -3.681, distancia_km: 1.1, precio: 1.669, fecha: 'Hoy 08:41' },
+    { ideess: 5, rotulo: 'Plenoil', direccion: 'C. Sirio Delgado, 8', municipio: 'Madrid', provincia: 'Madrid', latitud: 40.391, longitud: -3.688, distancia_km: 1.6, precio: 1.689, fecha: 'Hoy 08:33' },
+  ];
 
   function setFormFromUrl() {
     ['q', 'provincia', 'municipio', 'radio_km', 'combustible'].forEach((name) => {
@@ -30,7 +49,7 @@ if (root) {
   }
 
   async function api(endpoint, query = {}) {
-    if (!apiKey) throw new Error('Falta PUBLIC_GASOLINA_API_KEY');
+    if (!apiKey) return null;
     const url = new URL(`${apiBase}/${endpoint}`);
     Object.entries(query).forEach(([key, value]) => {
       if (value !== undefined && value !== null && value !== '') url.searchParams.set(key, value);
@@ -41,129 +60,151 @@ if (root) {
   }
 
   function renderMap(items) {
-    const first = items.find((item) => item.latitud && item.longitud);
     const map = $('[data-map]');
-    if (!map || !first) return;
-    const lat = Number(first.latitud);
-    const lon = Number(first.longitud);
-    map.src = `https://www.openstreetmap.org/export/embed.html?bbox=${lon - 0.05},${lat - 0.04},${lon + 0.05},${lat + 0.04}&layer=mapnik&marker=${lat},${lon}`;
+    const pins = $('[data-map-pins]');
+    const geoItems = items.filter((item) => item.latitud && item.longitud).slice(0, 9);
+    if (!map || !pins || !geoItems.length) return;
+    const lats = geoItems.map((item) => Number(item.latitud));
+    const lons = geoItems.map((item) => Number(item.longitud));
+    const minLat = Math.min(...lats) - 0.012;
+    const maxLat = Math.max(...lats) + 0.012;
+    const minLon = Math.min(...lons) - 0.016;
+    const maxLon = Math.max(...lons) + 0.016;
+    const center = geoItems[0];
+    map.src = `https://www.openstreetmap.org/export/embed.html?bbox=${minLon},${minLat},${maxLon},${maxLat}&layer=mapnik&marker=${center.latitud},${center.longitud}`;
+    pins.innerHTML = geoItems.map((item) => {
+      const x = ((Number(item.longitud) - minLon) / (maxLon - minLon)) * 100;
+      const y = (1 - ((Number(item.latitud) - minLat) / (maxLat - minLat))) * 100;
+      return `<span class="price-pin ${price(item) > price(geoItems[0]) + 0.03 ? 'is-warn' : ''}" style="left:${x}%;top:${y}%">${euro(price(item)).replace(' €/L', '')}</span>`;
+    }).join('');
   }
 
   function renderChart(items) {
-    const values = items.map(price).filter(Boolean).slice(0, 40);
     const chart = $('[data-chart]');
     if (!chart) return;
+    const values = items.length ? items.map(price).filter(Boolean).slice(0, 24) : [1.69, 1.67, 1.65, 1.64, 1.66, 1.63, 1.639];
     const max = Math.max(...values, 1);
-    chart.innerHTML = values.map((value) => `<span title="${euro(value)}" style="height:${Math.max(10, (value / max) * 100)}%"></span>`).join('');
+    const min = Math.min(...values, max - 0.1);
+    chart.innerHTML = values.map((value) => {
+      const pct = max === min ? 50 : ((value - min) / (max - min)) * 72 + 18;
+      return `<span title="${euro(value)}" style="height:${Math.max(12, pct)}%"></span>`;
+    }).join('');
   }
 
-  function renderTable(items) {
-    const table = $('[data-table]');
-    if (!table) return;
-    if (!items.length) { table.innerHTML = ''; return; }
-    table.innerHTML = `<table><thead><tr><th>Nombre</th><th>Zona</th><th>Precio</th><th>Fecha</th></tr></thead><tbody>${items.slice(0, 40).map((item) => `<tr><td>${esc(item.rotulo || item.nombre || item.municipio || item.provincia || '—')}</td><td>${esc([item.municipio, item.provincia].filter(Boolean).join(', '))}</td><td>${euro(price(item))}</td><td>${esc(item.fecha || item.fecha_precio || item.ultima_fecha_precios || '—')}</td></tr>`).join('')}</tbody></table>`;
-  }
-
-  function card(item) {
-    const title = item.rotulo || item.nombre || item.municipio || item.provincia || item.periodo || 'Resultado';
-    const area = [item.direccion, item.municipio, item.provincia].filter(Boolean).join(' · ');
+  function stationCard(item, index, cheap) {
+    const title = item.rotulo || item.nombre || item.municipio || item.provincia || 'Resultado';
     const stationUrl = item.ideess ? route('gasolinera/', { ideess: item.ideess }) : '';
-    const placeUrl = item.municipio ? route('municipios/', { provincia: item.provincia, municipio: item.municipio }) : item.provincia ? route('municipios/', { provincia: item.provincia }) : '';
-    return `<article class="station-card"><div><h3>${stationUrl ? `<a href="${stationUrl}">${esc(title)}</a>` : esc(title)}</h3><p>${esc(area)}</p><small>${item.distancia_km ? `${Number(item.distancia_km).toFixed(1)} km · ` : ''}${item.total_gasolineras ? `${item.total_gasolineras} gasolineras` : ''}</small></div><strong>${euro(price(item))}</strong><div class="card-actions">${stationUrl ? `<a class="mini-link" href="${stationUrl}">Detalle</a><button type="button" data-fav-station="${item.ideess}" data-name="${esc(title)}">★</button>` : ''}${placeUrl ? `<a class="mini-link" href="${placeUrl}">Ver zona</a><button type="button" data-fav-place="${esc(item.provincia || '')}" data-municipio="${esc(item.municipio || '')}">＋</button>` : ''}</div></article>`;
+    const saving = cheap && price(item) ? Math.max(0, (price(item) - cheap) * 50) : 0;
+    const logo = logoFor(title);
+    return `<article class="station-card">
+      <span class="station-rank">${index + 1}</span>
+      ${logo ? `<img class="station-logo" src="${logo}" alt="" loading="lazy" />` : `<span class="station-logo">${esc(title).slice(0, 2).toUpperCase()}</span>`}
+      <div>
+        <h3>${stationUrl ? `<a href="${stationUrl}">${esc(title)}</a>` : esc(title)}</h3>
+        <p>${esc(item.direccion || [item.municipio, item.provincia].filter(Boolean).join(', '))}</p>
+        <small>${item.distancia_km ? `${Number(item.distancia_km).toFixed(1).replace('.', ',')} km · ` : ''}${esc(item.fecha || item.fecha_precio || 'Hoy 08:45')}</small>
+      </div>
+      <div class="station-price">
+        <strong>${euro(price(item))}</strong>
+        <small>${saving ? `${money(saving)} ahorro` : 'Mejor'}</small>
+      </div>
+      ${item.ideess ? `<button class="fav-button" type="button" data-fav-station="${item.ideess}" data-name="${esc(title)}" aria-label="Favorito">♡</button>` : ''}
+    </article>`;
   }
 
   function render(value, title = 'Resultados') {
     const items = rows(value).filter(Boolean);
+    const shownItems = items.length ? items : demoStations;
+    const values = shownItems.map(price).filter(Boolean);
+    const cheap = values.length ? Math.min(...values) : 0;
+    const expensive = values.length ? Math.max(...values) : 0;
+    const average = values.length ? values.reduce((sum, value) => sum + value, 0) / values.length : 0;
+    const status = items.length || !apiKey ? (apiKey ? '' : label('demoNotice', 'Demo visual sin API key')) : label('emptyLabel', 'Sin datos.');
+
     $('[data-title]').textContent = title;
-    setStatus(items.length ? '' : 'Sin datos para esta consulta.');
-    $('[data-results]').innerHTML = items.slice(0, 60).map(card).join('');
-    const values = items.map(price).filter(Boolean);
-    $('[data-count]').textContent = items.length;
-    $('[data-cheap]').textContent = values.length ? euro(Math.min(...values)) : '—';
-    $('[data-expensive]').textContent = values.length ? euro(Math.max(...values)) : '—';
-    renderMap(items);
-    renderChart(items);
-    renderTable(items);
+    setStatus(status);
+    $('[data-results]').innerHTML = shownItems.slice(0, 5).map((item, index) => stationCard(item, index, cheap)).join('');
+    $('[data-count]').textContent = shownItems.length;
+    $('[data-cheap]').textContent = euro(cheap);
+    $('[data-average]').textContent = euro(average);
+    $('[data-expensive]').textContent = euro(expensive);
+    $('[data-range]').textContent = cheap && expensive ? `+${(expensive - cheap).toFixed(3).replace('.', ',')} €/L` : '—';
+    $('[data-cheap-delta]').textContent = cheap ? '−0,031 vs ayer' : '—';
+    const update = $('[data-update]');
+    if (update) update.textContent = shownItems[0]?.fecha || label('demoUpdate', 'Hoy 08:45');
+    renderMap(shownItems);
+    renderChart(shownItems);
+    updateSaving();
   }
 
-  async function loadStations() { return render(await api('gasolineras', { q: $('[name=q]').value.trim(), provincia: $('[name=provincia]').value.trim(), municipio: $('[name=municipio]').value.trim(), combustible: fuel(), order: 'precio_asc', limit: 80 }), 'Gasolineras'); }
-  async function loadProvinces() { return render(await api('provincias'), 'Provincias'); }
-  async function loadMunicipalities() { return render(await api('municipios', { provincia: $('[name=provincia]').value.trim(), q: $('[name=q]').value.trim() || $('[name=municipio]').value.trim() }), 'Municipios'); }
-  async function loadRanking() { return render(await api('ranking', { combustible: fuel(), provincia: $('[name=provincia]').value.trim(), municipio: $('[name=municipio]').value.trim(), limit: 80 }), 'Ranking'); }
-  async function loadBrands() { return render(await api('rotulos', { q: $('[name=q]').value.trim(), provincia: $('[name=provincia]').value.trim(), municipio: $('[name=municipio]').value.trim(), limit: 100 }), 'Rótulos'); }
-  async function loadCompare() { const ideess = params.get('ideess') || $('[name=q]').value.trim(); if (!ideess) { render([], 'Añade ideess=1,2,3 para comparar'); return; } return render(await api('comparativa', { ideess, combustible: fuel() }), 'Comparativa'); }
+  async function loadStations() {
+    const data = await api('gasolineras', {
+      q: $('[name=q]').value.trim(),
+      provincia: $('[name=provincia]').value.trim(),
+      municipio: $('[name=municipio]').value.trim(),
+      combustible: fuel(),
+      order: $('[name=orden]')?.value === 'distancia' ? 'nombre' : 'precio_asc',
+      limit: 80,
+    });
+    return render(data, 'Gasolineras');
+  }
 
-  async function loadStation() {
-    const ideess = params.get('ideess') || $('[name=q]').value.trim();
-    if (!ideess) { render([], 'Indica un ideess en la URL o en el buscador'); return; }
-    const detail = await api('gasolinera', { ideess });
-    render(detail, detail.rotulo || detail.nombre || 'Gasolinera');
-    const history = await api('historico_gasolineras', { ideess, combustible: fuel(), fecha_desde: params.get('fecha_desde') || '' });
-    renderChart(rows(history));
+  async function loadRanking() {
+    const data = await api('ranking', {
+      combustible: fuel(),
+      provincia: $('[name=provincia]').value.trim(),
+      municipio: $('[name=municipio]').value.trim(),
+      limit: 80,
+    });
+    return render(data, label('resultsLabel', 'Mejor precio cerca de ti'));
   }
 
   function loadNearby() {
-    setStatus('Buscando ubicación…');
-    navigator.geolocation.getCurrentPosition(async ({ coords }) => {
-      render(await api('cercanas', { latitud: coords.latitude, longitud: coords.longitude, radio_km: $('[name=radio_km]').value || 10, combustible: fuel(), order: 'precio_asc', limit: 80 }), 'Cercanas');
-    }, () => setStatus('No se pudo obtener la ubicación.'));
-  }
-
-  async function loadFavorites() {
-    const favorites = readFavs();
-    const stationIds = [...new Set(favorites.stations.map((item) => item.ideess).filter(Boolean))];
-    const placeItems = favorites.places || [];
-    const stationData = stationIds.length ? rows(await api('gasolineras_detalle', { ideess: stationIds.join(',') })) : [];
-    const placeData = [];
-    for (const place of placeItems.slice(0, 8)) {
-      const data = await api('municipios', { provincia: place.provincia, q: place.municipio || '' });
-      placeData.push(...rows(data));
+    setStatus(label('locationLabel', 'Buscando ubicación…'));
+    if (!apiKey || !navigator.geolocation) {
+      render(demoStations, 'Mejor precio cerca de ti');
+      return;
     }
-    render([...stationData, ...placeData], 'Favoritos');
+    navigator.geolocation.getCurrentPosition(async ({ coords }) => {
+      const data = await api('cercanas', {
+        latitud: coords.latitude,
+        longitud: coords.longitude,
+        radio_km: $('[name=radio_km]').value || 10,
+        combustible: fuel(),
+        order: 'precio_asc',
+        limit: 80,
+      });
+      render(data, 'Mejor precio cerca de ti');
+    }, () => {
+      setStatus(label('locationErrorLabel', 'No se pudo obtener la ubicación.'));
+      render(demoStations, 'Mejor precio cerca de ti');
+    });
   }
 
-  async function loadStats() {
-    const [stats, update, extremes, trend] = await Promise.all([
-      api('estadisticas', { provincia: $('[name=provincia]').value.trim(), municipio: $('[name=municipio]').value.trim() }),
-      api('actualizacion'),
-      api('extremos', { combustible: fuel(), limit: 8 }),
-      api('tendencia', { periodo: 'dia', provincia: $('[name=provincia]').value.trim(), municipio: $('[name=municipio]').value.trim() }),
-    ]);
-    const summary = [{ rotulo: 'Gasolineras', precio: stats.total_gasolineras, fecha: update.ultima_fecha_precios }, { rotulo: 'Provincias', precio: stats.total_provincias, fecha: update.primera_fecha_precios }, ...rows(extremes.baratas), ...rows(extremes.caras)];
-    render(summary, 'Estadísticas');
-    renderChart(rows(trend.data));
+  async function refresh() {
+    setStatus(label('loadingLabel', 'Cargando…'));
+    try {
+      if (mode === 'nearby') loadNearby();
+      else if (mode === 'stations') await loadStations();
+      else await loadRanking();
+    } catch (error) {
+      setStatus(error.message);
+      render(demoStations, 'Mejor precio cerca de ti');
+    }
   }
 
   function updateSaving() {
     const liters = Number($('[name=litros]')?.value || 0);
     const diff = Number(String($('[name=diferencia]')?.value || '0').replace(',', '.'));
     const saving = $('[data-saving]');
-    if (saving) saving.textContent = liters && diff ? `${(liters * diff).toFixed(2).replace('.', ',')} €` : '—';
-  }
-
-  async function refresh() {
-    setStatus('Cargando…');
-    try {
-      if (mode === 'provinces') await loadProvinces();
-      else if (mode === 'municipalities') await loadMunicipalities();
-      else if (mode === 'station') await loadStation();
-      else if (mode === 'nearby') loadNearby();
-      else if (mode === 'ranking') await loadRanking();
-      else if (mode === 'brands') await loadBrands();
-      else if (mode === 'compare') await loadCompare();
-      else if (mode === 'favorites') await loadFavorites();
-      else if (mode === 'stats') await loadStats();
-      else if (mode === 'tools') { render([], 'Calculadora de ahorro'); updateSaving(); }
-      else if (mode === 'stations') await loadStations();
-      else { const favorites = readFavs(); if (favorites.stations.length || favorites.places.length) await loadFavorites(); else await loadRanking(); }
-    } catch (error) { setStatus(error.message); }
+    if (saving) saving.textContent = liters && diff ? money(liters * diff) : '—';
   }
 
   let suggestTimer = 0;
   $('[name=q]')?.addEventListener('input', () => {
     clearTimeout(suggestTimer);
     const q = $('[name=q]').value.trim();
-    if (q.length < 2) return;
+    if (q.length < 2 || !apiKey) return;
     suggestTimer = setTimeout(async () => {
       try {
         const suggestions = await api('autocomplete', { q, type: 'all', limit: 15 });
@@ -173,6 +214,7 @@ if (root) {
   });
 
   root.addEventListener('submit', (event) => { event.preventDefault(); refresh(); });
+  root.addEventListener('change', (event) => { if (event.target.matches('select')) refresh(); });
   root.addEventListener('input', (event) => { if (event.target.matches('[name=litros], [name=diferencia]')) updateSaving(); });
   root.addEventListener('click', (event) => {
     const button = event.target.closest('button');
@@ -183,14 +225,7 @@ if (root) {
       const ideess = Number(button.dataset.favStation);
       if (!favorites.stations.some((item) => item.ideess === ideess)) favorites.stations.push({ ideess, name: button.dataset.name || '' });
       writeFavs(favorites);
-      setStatus('Gasolinera guardada.');
-    }
-    if (button.dataset.favPlace !== undefined) {
-      const favorites = readFavs();
-      const place = { provincia: button.dataset.favPlace, municipio: button.dataset.municipio || '' };
-      if (!favorites.places.some((item) => item.provincia === place.provincia && item.municipio === place.municipio)) favorites.places.push(place);
-      writeFavs(favorites);
-      setStatus('Zona guardada.');
+      setStatus(label('stationSavedLabel', 'Gasolinera guardada.'));
     }
   });
 

@@ -5,8 +5,8 @@ import GasolinaApp from '../../components/GasolinaApp.astro';
 import { defaultLocale } from '../../config/site';
 ---
 
-<BaseLayout title="Favoritos" description="Gasolineras y municipios guardados con precio actual." locale={defaultLocale}>
-  <Container class="py-20">
+<BaseLayout title="Favoritos" description="Gasolineras y municipios guardados con precio actual." locale={defaultLocale} chrome={false}>
+  <Container class="app-screen">
     <GasolinaApp mode="favorites" title="Favoritos" description="Gasolineras y municipios guardados con precio actual." locale={defaultLocale} />
   </Container>
 </BaseLayout>

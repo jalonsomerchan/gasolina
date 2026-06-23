@@ -1,0 +1,33 @@
+---
+import type { GasolinaCopy } from '../../data/gasolina';
+
+interface Props {
+  copy: GasolinaCopy;
+}
+
+const { copy } = Astro.props;
+---
+
+<section class="station-sheet" id="stations-sheet">
+  <div class="sheet-handle" aria-hidden="true"></div>
+  <div class="sheet-heading">
+    <div>
+      <h2 data-title>{copy.app.bestNearYou}</h2>
+      <p class="state" data-status>{copy.app.loading}</p>
+    </div>
+    <label>
+      <span>{copy.app.sort}</span>
+      <select name="orden">
+        <option value="precio_asc">{copy.app.price}</option>
+        <option value="distancia">{copy.app.distance}</option>
+      </select>
+    </label>
+  </div>
+  <div class="cards-list" data-results></div>
+  <div class="quick-filters" aria-label={copy.app.filters}>
+    <button type="button" data-filter-all>{copy.app.all}</button>
+    <button type="button" data-filter-cheap>{copy.app.underPrice}</button>
+    <button type="button" data-nearby>{copy.app.openNow}</button>
+    <a href="#history-panel">{copy.app.historyShort}</a>
+  </div>
+</section>

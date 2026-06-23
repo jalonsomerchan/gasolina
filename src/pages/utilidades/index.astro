@@ -5,8 +5,8 @@ import GasolinaApp from '../../components/GasolinaApp.astro';
 import { defaultLocale } from '../../config/site';
 ---
 
-<BaseLayout title="Utilidades" description="Calcula el ahorro por deposito y consulta herramientas rapidas." locale={defaultLocale}>
-  <Container class="py-20">
+<BaseLayout title="Utilidades" description="Calcula el ahorro por deposito y consulta herramientas rapidas." locale={defaultLocale} chrome={false}>
+  <Container class="app-screen">
     <GasolinaApp mode="tools" title="Utilidades" description="Calcula el ahorro por deposito y consulta herramientas rapidas." locale={defaultLocale} />
   </Container>
 </BaseLayout>

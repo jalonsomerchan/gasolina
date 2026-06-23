@@ -1,0 +1,20 @@
+---
+import type { GasolinaCopy } from '../../data/gasolina';
+
+interface Props {
+  copy: GasolinaCopy;
+}
+
+const { copy } = Astro.props;
+---
+
+<header class="gasolina-topbar">
+  <div>
+    <p class="app-kicker">{copy.hero.eyebrow}</p>
+    <h1>{copy.title}</h1>
+  </div>
+  <button class="location-pill" type="button" data-nearby>
+    <span aria-hidden="true">⌖</span>
+    {copy.app.locationShort}
+  </button>
+</header>

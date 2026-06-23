@@ -1,0 +1,18 @@
+---
+import type { GasolinaCopy } from '../../data/gasolina';
+
+interface Props {
+  copy: GasolinaCopy;
+}
+
+const { copy } = Astro.props;
+---
+
+<section class="map-stage" aria-label={copy.app.map}>
+  <iframe title={copy.app.map} loading="lazy" data-map></iframe>
+  <div class="map-overlay" data-map-pins aria-hidden="true"></div>
+  <div class="map-actions">
+    <button class="map-action" type="button" data-nearby>{copy.app.centerMap}</button>
+    <a class="map-action" href="#stations-sheet">{copy.app.viewList}</a>
+  </div>
+</section>

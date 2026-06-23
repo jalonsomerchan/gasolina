@@ -1,0 +1,21 @@
+---
+import { gasolinaPages, type GasolinaCopy } from '../../data/gasolina';
+import { withBasePath } from '../../utils/paths';
+
+interface Props {
+  copy: GasolinaCopy;
+  mode: string;
+}
+
+const { copy, mode } = Astro.props;
+const navItems = gasolinaPages.filter((page) => ['home', 'stations', 'nearby', 'stats', 'favorites'].includes(page.mode));
+---
+
+<nav class="bottom-nav" aria-label={copy.app.navLabel}>
+  {navItems.map((page) => (
+    <a class={page.mode === mode ? 'is-active' : ''} href={withBasePath(page.path)}>
+      <span aria-hidden="true">{copy.navIcons[page.key]}</span>
+      {copy.pages[page.key]}
+    </a>
+  ))}
+</nav>

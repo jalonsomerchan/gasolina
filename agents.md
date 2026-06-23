@@ -56,7 +56,8 @@ Todo agente IA debe aplicar estas reglas en cualquier cambio:
 7. No eliminar tests para ocultar problemas: corregir el código o actualizar el test de forma robusta.
 8. No duplicar lógica entre idiomas, páginas o componentes si puede centralizarse.
 9. No crear ficheros grandes por comodidad; preferir piezas pequeñas con nombres claros.
-10. Documentar cualquier convención nueva que afecte al uso del proyecto.
+10. Crear siempre la UI nueva como componentes reutilizables cuando pueda repetirse, moverse o probarse de forma independiente.
+11. Documentar cualquier convención nueva que afecte al uso del proyecto.
 
 ## Reglas obligatorias para crear issues
 
@@ -212,6 +213,48 @@ Guía orientativa:
 - Si una lista de datos crece, moverla a un fichero de datos o configuración.
 
 La prioridad es claridad, reutilización y mantenimiento.
+
+## Componentes reutilizables obligatorios
+
+Toda UI nueva debe diseñarse primero como composición de componentes reutilizables. Las páginas deben actuar como ensambladores ligeros: importar layout, contenedor, datos/configuración y componentes; no deben acumular bloques grandes de HTML, lógica visual o estilos específicos.
+
+Reglas obligatorias:
+
+- Antes de crear UI, revisar `src/components/` y reutilizar componentes existentes si encajan.
+- Si una pieza de UI puede aparecer en más de una ruta, estado, idioma o variante responsive, crear un componente propio.
+- Si un componente crece demasiado o mezcla responsabilidades, dividirlo en subcomponentes más pequeños.
+- Pasar textos, datos y configuración mediante props simples; no hardcodear textos visibles dentro de componentes reutilizables salvo que sean puramente decorativos o no traducibles.
+- Mantener rutas internas con `withBasePath`, `getLocalizedPath` o helpers existentes; no usar rutas absolutas duras.
+- Mantener estilos específicos del componente cerca del sistema de UI correspondiente cuando sea claro, y dejar `src/styles/global.css` solo para tokens, resets y reglas globales.
+- No duplicar variantes por idioma; usar `locale`, `copy`, `useTranslations(locale)` o datos localizados.
+- No meter lógica de API compleja dentro de componentes Astro estáticos; centralizar datos en `src/data/`, helpers o JavaScript público cuando corresponda.
+- Si se añade una familia de componentes para una feature, agruparla en una carpeta con nombre claro dentro de `src/components/`.
+
+Componentes base actuales:
+
+- `src/components/AppScript.astro`: carga scripts públicos respetando `base`.
+- `src/components/Button.astro`: botón/enlace base reutilizable.
+- `src/components/Container.astro`: contenedor responsive base.
+- `src/components/Header.astro`: cabecera global cuando una página usa chrome de sitio.
+- `src/components/Footer.astro`: pie global cuando una página usa chrome de sitio.
+- `src/components/GasolinaApp.astro`: ensamblador principal de la app de gasolina.
+
+Componentes de la app de gasolina:
+
+- `src/components/gasolina/GasolinaTopBar.astro`: título, estado superior y acción de ubicación.
+- `src/components/gasolina/GasolinaSearchControls.astro`: buscador, combustible, radio, provincia y municipio.
+- `src/components/gasolina/GasolinaMapPanel.astro`: mapa operativo y pins de precios.
+- `src/components/gasolina/StationSheet.astro`: panel/listado de estaciones y filtros rápidos.
+- `src/components/gasolina/PriceRadar.astro`: métricas de precio barato, medio y caro.
+- `src/components/gasolina/HistoryPanel.astro`: panel de histórico.
+- `src/components/gasolina/SavingsStrip.astro`: calculadora compacta de ahorro.
+- `src/components/gasolina/GasolinaBottomNav.astro`: navegación inferior de la app.
+
+Regla para páginas de gasolina:
+
+- Las rutas de gasolina deben reutilizar `GasolinaApp` y pasar `mode`, `locale`, `title` y `description` cuando aplique.
+- No duplicar la estructura interna de la app en cada página.
+- Si una ruta necesita una variación visual, añadir props o subcomponentes reutilizables antes de copiar markup.
 
 ## Idiomas e i18n obligatorio
 

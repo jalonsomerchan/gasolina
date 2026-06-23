@@ -5,8 +5,8 @@ import GasolinaApp from '../../components/GasolinaApp.astro';
 import { defaultLocale } from '../../config/site';
 ---
 
-<BaseLayout title="Municipios" description="Consulta precios actuales e históricos por municipio." locale={defaultLocale}>
-  <Container class="py-20">
+<BaseLayout title="Municipios" description="Consulta precios actuales e históricos por municipio." locale={defaultLocale} chrome={false}>
+  <Container class="app-screen">
     <GasolinaApp mode="municipalities" title="Municipios" description="Consulta precios actuales e históricos por municipio." locale={defaultLocale} />
   </Container>
 </BaseLayout>

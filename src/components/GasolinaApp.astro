@@ -1,6 +1,15 @@
 ---
 import AppScript from './AppScript.astro';
-import { gasolinaPages, getGasolinaCopy, type GasolinaMode } from '../data/gasolina';
+import '../styles/gasolina-app.css';
+import GasolinaBottomNav from './gasolina/GasolinaBottomNav.astro';
+import GasolinaMapPanel from './gasolina/GasolinaMapPanel.astro';
+import GasolinaSearchControls from './gasolina/GasolinaSearchControls.astro';
+import GasolinaTopBar from './gasolina/GasolinaTopBar.astro';
+import HistoryPanel from './gasolina/HistoryPanel.astro';
+import PriceRadar from './gasolina/PriceRadar.astro';
+import SavingsStrip from './gasolina/SavingsStrip.astro';
+import StationSheet from './gasolina/StationSheet.astro';
+import { getGasolinaCopy, type GasolinaMode } from '../data/gasolina';
 import { defaultLocale, type Locale } from '../config/site';
 import { withBasePath } from '../utils/paths';
 
@@ -19,8 +28,7 @@ const {
 } = Astro.props;
 const copy = getGasolinaCopy(locale);
 const apiKey = import.meta.env.PUBLIC_GASOLINA_API_KEY ?? '';
-const currentPage = gasolinaPages.find((page) => page.mode === mode);
-const pageTitle = title ?? (currentPage ? copy.pages[currentPage.key] : copy.title);
+const pageTitle = title ?? copy.title;
 const pageDescription = description ?? copy.description;
 ---
 
@@ -32,71 +40,27 @@ const pageDescription = description ?? copy.description;
   data-api-key={apiKey}
   data-base-path={withBasePath('')}
   data-sw={withBasePath('sw.js')}
+  data-empty-label={copy.app.empty}
+  data-loading-label={copy.app.loading}
+  data-detail-label={copy.app.detail}
+  data-zone-label={copy.app.viewZone}
+  data-station-saved-label={copy.app.stationSaved}
+  data-place-saved-label={copy.app.placeSaved}
+  data-location-label={copy.app.location}
+  data-location-error-label={copy.app.locationError}
+  data-demo-notice={copy.app.demoNotice}
 >
-  <div class="hero-panel">
-    <p class="eyebrow">{copy.hero.eyebrow}</p>
-    <h1>{pageTitle}</h1>
-    <p>{pageDescription}</p>
-    <div class="hero-actions">
-      <button class="button primary" type="button" data-nearby>{copy.hero.primary}</button>
-      <a class="button secondary" href={withBasePath('estadisticas/')}>{copy.hero.secondary}</a>
-    </div>
+  <div class="gasolina-phone">
+    <GasolinaTopBar copy={copy} />
+    <p class="sr-only">{pageTitle}. {pageDescription}</p>
+    <GasolinaSearchControls copy={copy} mode={mode} />
+    <GasolinaMapPanel copy={copy} />
+    <StationSheet copy={copy} />
+    <PriceRadar copy={copy} />
+    <HistoryPanel copy={copy} />
+    <SavingsStrip copy={copy} />
+    <GasolinaBottomNav copy={copy} mode={mode} />
   </div>
-
-  <nav class="app-tabs" aria-label="Secciones de gasolina">
-    {gasolinaPages.map((page) => (
-      <a class={page.mode === mode ? 'is-active' : ''} href={withBasePath(page.path)}>{copy.pages[page.key]}</a>
-    ))}
-  </nav>
-
-  <form class="search-panel" data-search-form>
-    <label for={`gasolina-q-${mode}`}>{copy.app.searchLabel}</label>
-    <div class="search-row">
-      <input id={`gasolina-q-${mode}`} name="q" type="search" list="gasolina-suggestions" placeholder={copy.app.searchPlaceholder} autocomplete="off" />
-      <button class="button primary" type="submit">{copy.app.searchLabel}</button>
-    </div>
-    <datalist id="gasolina-suggestions" data-suggestions></datalist>
-    <div class="filters">
-      <label>{copy.app.fuel}<select name="combustible"><option value="gasolina_95">Gasolina 95</option><option value="gasolina_98">Gasolina 98</option><option value="gasoleo_a">Gasoleo A</option></select></label>
-      <label>{copy.app.province}<input name="provincia" /></label>
-      <label>{copy.app.municipality}<input name="municipio" /></label>
-      <label>{copy.app.radius}<input name="radio_km" inputmode="decimal" value="10" /></label>
-    </div>
-  </form>
-
-  <section class="dashboard-grid" aria-label="Resumen">
-    <article class="card accent-card"><span>{copy.app.results}</span><strong data-count>—</strong></article>
-    <article class="card"><span>{copy.app.cheapest}</span><strong data-cheap>—</strong></article>
-    <article class="card"><span>{copy.app.expensive}</span><strong data-expensive>—</strong></article>
-  </section>
-
-  <section class="content-grid">
-    <article class="panel large">
-      <h2 data-title>{copy.app.results}</h2>
-      <p class="state" data-status>{copy.app.loading}</p>
-      <div class="cards-list" data-results></div>
-      <div class="table-wrap" data-table></div>
-    </article>
-    <article class="panel map-panel">
-      <h2>{copy.app.map}</h2>
-      <iframe title={copy.app.map} loading="lazy" data-map></iframe>
-    </article>
-  </section>
-
-  <section class="content-grid">
-    <article class="panel">
-      <h2>{copy.app.chart}</h2>
-      <div class="chart" data-chart></div>
-    </article>
-    <article class="panel">
-      <h2>{copy.app.utilities}</h2>
-      <div class="utility-grid">
-        <label>{copy.app.liters}<input name="litros" inputmode="decimal" value="50" /></label>
-        <label>{copy.app.priceDifference}<input name="diferencia" inputmode="decimal" value="0.10" /></label>
-        <strong data-saving>—</strong>
-      </div>
-    </article>
-  </section>
 </section>
 
 <AppScript src={withBasePath('gasolina-app.js')} />

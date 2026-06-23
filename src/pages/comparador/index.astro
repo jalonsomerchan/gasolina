@@ -5,8 +5,8 @@ import GasolinaApp from '../../components/GasolinaApp.astro';
 import { defaultLocale } from '../../config/site';
 ---
 
-<BaseLayout title="Comparador" description="Compara varias gasolineras y estima el ahorro por repostaje." locale={defaultLocale}>
-  <Container class="py-20">
+<BaseLayout title="Comparador" description="Compara varias gasolineras y estima el ahorro por repostaje." locale={defaultLocale} chrome={false}>
+  <Container class="app-screen">
     <GasolinaApp mode="compare" title="Comparador" description="Compara varias gasolineras y estima el ahorro por repostaje." locale={defaultLocale} />
   </Container>
 </BaseLayout>

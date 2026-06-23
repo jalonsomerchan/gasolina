@@ -11,12 +11,14 @@ interface Props {
   description?: string;
   image?: string;
   locale?: Locale;
+  chrome?: boolean;
 }
 
 const {
   title = siteConfig.name,
   image = 'og-image.svg',
   locale = defaultLocale,
+  chrome = true,
 } = Astro.props;
 
 const t = useTranslations(locale);
@@ -52,10 +54,10 @@ const ogLocale = locale === 'es' ? 'es_ES' : 'en_US';
     <meta name="twitter:image" content={imageUrl} />
   </head>
   <body>
-    <Header locale={locale} />
+    {chrome && <Header locale={locale} />}
     <main>
       <slot />
     </main>
-    <Footer locale={locale} />
+    {chrome && <Footer locale={locale} />}
   </body>
 </html>
