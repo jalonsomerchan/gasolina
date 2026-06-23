@@ -28,7 +28,7 @@ const {
 } = Astro.props;
 const copy = getGasolinaCopy(locale);
 const apiKey = import.meta.env.PUBLIC_GASOLINA_API_KEY ?? '';
-const ipApiBase = import.meta.env.PUBLIC_IP_API_BASE ?? 'http://ip-api.com/json';
+const ipApiBase = import.meta.env.PUBLIC_IP_API_BASE ?? 'https://ipapi.co/json/';
 const pageTitle = title ?? copy.title;
 const pageDescription = description ?? copy.description;
 ---
